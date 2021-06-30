@@ -1,6 +1,6 @@
 from numpy.lib.shape_base import tile
 import streamlit as st
-from multiapp import MultiApp
+from apps.multiapp import MultiApp
 from apps import regression, EDA, methods
 
 app = MultiApp()
