@@ -15,8 +15,8 @@ def app():
 
     """)
     st.write('Figure 1 - dataset from scraping')
-    df_showcase = pd.read_csv('data_2021-06-25.csv')
-    st.dataframe(df_showcase[:40])
+    df_showcase = pd.read_csv('./demo_data/data_demo_1.csv')
+    st.dataframe(df_showcase[:20])
     st.write(" ** An example of scraped index 0 features ** ")
     st.write(df_showcase['features'][0])
     st.markdown(""" 
@@ -35,9 +35,9 @@ def app():
    
     After much hacking and slashin, many new columns have been extracted from the scraped features.
     """)
-    name = 'data_clean_2021-06-26.xlsx'
-    df_clean_data = pd.read_excel(name)
-    st.dataframe(df_clean_data[:40])
+  
+    df_clean_data = pd.read_csv('./demo_data/data_demo_2.csv')
+    st.dataframe(df_clean_data[:20])
     st.markdown(""" 
     
    
@@ -62,9 +62,8 @@ def app():
     
     ## Data transformation - Pipeline
    
-    Missing values from the selected features were droped to preserve the original data distribution.
-    Categorical variables **[Menjalnik, Oblika, brands, Gorivo]** were transformed with Sklearn OneHotEndoer. 
-    To acces the transformations later, 
+    Missing values from the selected features were droped to preserve the original data distribution. Categorical variables **[Menjalnik, Oblika, brands, Gorivo]** were transformed with Sklearn OneHotEndoer. 
+    To acces the transformations later. In the same manner numerical features **[prevozeni_km, Motor KM, letnik]** were scaled with a Sklearn RobustScaler
     
 
     """)
