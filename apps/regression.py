@@ -95,14 +95,9 @@ def app():
     output = pd.DataFrame()
     output = output.append(data, ignore_index=True)
 
-
-
     # Insert the data though the data pipiline
     X = data_pipeline(output, return_one_hot=True)
 
-    print(X)
-
-    
     model_names = ['XGBoost']
 
     # Caching the model import for better performance
@@ -115,71 +110,31 @@ def app():
 
     # Loading the models in a dictionary with model_name:model pairs
     models = get_models()
-    st.spinner()
+
     # User model selection
     model_selections = st.selectbox('Select model:', model_names)
 
     # Model prediction output
     st.markdown(f"<h1 style='text-align: center; color: black;'>{(str(int(models[model_selections].predict(X.values))) + ' €')}</h1>", unsafe_allow_html=True)
-
+    print(models[model_selections].predict(X.values))
+    
     sns.set_style("white")
     NAME = 'joinedData.csv'
     df = pd.read_csv(NAME)
-    '''
-    fig, ax = plt.subplots()
-    ax = sns.displot(data = df, x = 'price',  kind="kde")
-    kdeline = ax.lines[0]
-    mean = df['price'].mean()
-    xs = kdeline.get_xdata()
-    ys = kdeline.get_ydata()
-    height = np.interp(mean, xs, ys)
-    ax.vlines(mean, 0, height, color='crimson', ls=':')
-    ax.fill_between(xs, 0, ys, facecolor='crimson', alpha=0.2)
-    #plt.show()
-    ax.set(xlim=(0,100000))
-    '''
-
 
     fig, ax = plt.subplots()
     sns.set_style("white")
 
     xx = np.linspace(df['price'].min(), df['price'].max(), 100)
-    #ax = sns.displot(df['price'] , bins=300)
+
     ax.plot(xx, stats.lomax.pdf(xx, *stats.lomax.fit(df['price'])), color="r", lw=2.5)
     plt.axvline(int(models[model_selections].predict(X.values)))
 
     percentile = scipy.stats.percentileofscore(df['price'], int(models[model_selections].predict(X.values)))
     st.markdown(f"<h1 style='text-align: center; color: black;'>{'Percentile rank: ' + str(round(percentile, 2))}</h1>", unsafe_allow_html=True)
     
-    ax.set(xlim=(0,100000))
-    # Get the fitted parameters used by the function
-    #(mu, sigma) = stats.lomax.fit(df['price'])
-    #print( '\n mu = {:.2f} and sigma = {:.2f}\n'.format(mu, sigma))
+    ax.set(xlim=(0,200000))
 
-    #Now plot the distribution
-    #plt.legend(['Normal dist. ($\mu=$ {:.2f} and $\sigma=$ {:.2f} )'.format(mu, sigma)],
-    #            loc='best')
-
-    
-    def sampling(sample_times, sample_size, distribution):
-        
-        sample_means = []
-        
-        for i in range(sample_times):
-            samples = []
-            samples.append(np.random.choice(distribution,sample_size))
-            sample_means.append(np.mean(samples))
-        return sample_means
 
     st.pyplot(fig)
 
-    #fig_2, ax = plt.subplots()
-
-    #ax = sns.distplot(sampling(100, 100, df['price']))
-    #st.pyplot(fig_2)
-#import tensorflow as tf 
-
-#from keras.models import load_model
-#model = tf.keras.models.load_model('model_NN.h5')
-#print(model.predict(X_imp))
-#st.header(str(int(model.predict(X_imp))) + ' €')
